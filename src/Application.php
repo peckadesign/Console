@@ -14,6 +14,7 @@ namespace Kdyby\Console;
 
 use Nette\Application\Application as NetteApplication;
 use Nette\DI\Container;
+use Nette\Utils\Arrays;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -144,7 +145,8 @@ class Application extends \Symfony\Component\Console\Application
 		$app = $this->serviceLocator->getByType(NetteApplication::class, FALSE);
 		if ($app !== NULL) {
 			/** @var \Nette\Application\Application $app */
-			$app->onError($app, $e);
+			// Nette Application 3.2 nepoužívá SmartObject, události se volají přes Arrays::invoke()
+			Arrays::invoke($app->onError, $app, $e);
 		}
 
 		$this->handleException($e, $output);
