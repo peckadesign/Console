@@ -43,7 +43,7 @@ class HttpRequestFactory extends \Nette\Http\RequestFactory
 			return parent::fromGlobals();
 		}
 
-		return new HttpRequest($this->fakeUrl, NULL, [], [], [], PHP_SAPI, PHP_SAPI, '127.0.0.1', NULL);
+		return new HttpRequest($this->fakeUrl, [], [], [], [], PHP_SAPI, PHP_SAPI, '127.0.0.1', NULL);
 	}
 
 }

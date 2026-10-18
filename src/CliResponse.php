@@ -16,7 +16,7 @@ use Nette\Application\Application as NetteApplication;
 use Nette\Http\IRequest;
 use Nette\Http\IResponse;
 
-class CliResponse implements \Nette\Application\IResponse
+class CliResponse implements \Nette\Application\Response
 {
 
 	use \Nette\SmartObject;

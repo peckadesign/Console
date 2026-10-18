@@ -94,7 +94,7 @@ class Application extends \Symfony\Component\Console\Application
 		if ($input->hasParameterOption('--debug-mode')) {
 			if ($input->hasParameterOption(['--debug-mode=no', '--debug-mode=off', '--debug-mode=false', '--debug-mode=0'])) {
 				if ($this->serviceLocator->parameters['debugMode']) {
-					$this->renderException(new \Kdyby\Console\Exception\InvalidApplicationModeException(
+					$this->renderThrowable(new \Kdyby\Console\Exception\InvalidApplicationModeException(
 						'The app is running in debug mode. You have to use Kdyby\Console\DI\BootstrapHelper in app/bootstrap.php, ' .
 						'Kdyby\Console cannot switch already running app to production mode.'
 					), $output);
@@ -104,7 +104,7 @@ class Application extends \Symfony\Component\Console\Application
 
 			} else {
 				if (!$this->serviceLocator->parameters['debugMode']) {
-					$this->renderException(new \Kdyby\Console\Exception\InvalidApplicationModeException(
+					$this->renderThrowable(new \Kdyby\Console\Exception\InvalidApplicationModeException(
 						'The app is running in production mode. You have to use Kdyby\Console\DI\BootstrapHelper in app/bootstrap.php, ' .
 						'Kdyby\Console cannot switch already running app to debug mode.'
 					), $output);
@@ -122,7 +122,7 @@ class Application extends \Symfony\Component\Console\Application
 			return parent::run($input, $output);
 
 		} catch (\Kdyby\Console\Exception\UnknownCommandException $e) {
-			$this->renderException($e->getPrevious(), $output);
+			$this->renderThrowable($e->getPrevious(), $output);
 			[$message] = explode("\n", $e->getMessage());
 			Debugger::log($message, Debugger::ERROR);
 
@@ -132,7 +132,7 @@ class Application extends \Symfony\Component\Console\Application
 			if (in_array(get_class($e), self::$invalidArgumentExceptions, TRUE)
 				&& preg_match('/^(The "-?-?.+" (option|argument) (does not (exist|accept a value)|requires a value)|(Not enough|Too many) arguments.*)\.$/', $e->getMessage()) === 1
 			) {
-				$this->renderException($e, $output);
+				$this->renderThrowable($e, $output);
 				Debugger::log($e->getMessage(), Debugger::ERROR);
 				return self::INPUT_ERROR_EXIT_CODE;
 			}
@@ -160,7 +160,7 @@ class Application extends \Symfony\Component\Console\Application
 	{
 		$output = $output ?: new ConsoleOutput();
 		if ($e instanceof \Exception) {
-			$this->renderException($e, $output);
+			$this->renderThrowable($e, $output);
 		} else {
 			$output->writeln(sprintf('<error>  %s  </error>', get_class($e)));
 			$output->writeln(sprintf('<error>  %s  </error>', $e->getMessage()));
