@@ -18,10 +18,10 @@ use Kdyby\Console\ContainerHelper;
 use Kdyby\Console\Helpers\PresenterHelper;
 use Nette\Application\Application as NetteApplication;
 use Nette\Application\IPresenterFactory;
-use Nette\Application\IRouter;
+use Nette\Routing\Router;
 use Nette\Application\Routers\RouteList;
 use Nette\Bridges\ApplicationDI\ApplicationExtension;
-use Nette\DI\Statement;
+use Nette\DI\Definitions\Statement;
 use Nette\Http\IRequest;
 use Nette\Utils\Validators;
 use Symfony\Component\Console\Helper\DebugFormatterHelper;
@@ -134,7 +134,7 @@ class ConsoleExtension extends \Nette\DI\CompilerExtension
 			$helperClasses[] = PresenterHelper::class;
 		}
 
-		/** @var \Nette\DI\Statement[] $helpers */
+		/** @var \Nette\DI\Definitions\Statement[] $helpers */
 		$helpers = array_map(static function ($class) {
 			return new Statement($class);
 		}, $helperClasses);
@@ -203,18 +203,18 @@ class ConsoleExtension extends \Nette\DI\CompilerExtension
 			$app->addSetup('$self = $this; $service->onError[] = function ($app, $e) use ($self) {' . "\n" .
 					"\t" . '$app->errorPresenter = ?;' . "\n" .
 					"\t" . '$app->onShutdown[] = function () { exit(?); };' . "\n" .
-					'}', [FALSE, 254]);
+					'}', [NULL, 254]);
 		}
 
-		$routerServiceName = $builder->getByType(IRouter::class) ?: 'router';
+		$routerServiceName = $builder->getByType(Router::class) ?: 'router';
 		$routerDefinition = $builder->getDefinition($routerServiceName);
 		$routerDefinition->setAutowired(FALSE);
 		$builder->addDefinition($this->prefix('originalRouter'), clone $routerDefinition);
 		$builder->removeDefinition($routerServiceName);
 		$builder->addDefinition($routerServiceName)
 			->setType(RouteList::class)
-			->addSetup('offsetSet', [NULL, $this->prefix('@router')])
-			->addSetup('offsetSet', [NULL, $this->prefix('@originalRouter')]);
+			->addSetup('add', [$this->prefix('@router')])
+			->addSetup('add', [$this->prefix('@originalRouter')]);
 
 		/** @var \Nette\DI\Definitions\ServiceDefinition $presenterFactory */
 		$presenterFactory = $builder->getDefinition($builder->getByType(IPresenterFactory::class) ?: 'nette.presenterFactory');

@@ -11,7 +11,7 @@ use Tester\Assert;
 class SameArgsCommandOne extends \Symfony\Component\Console\Command\Command
 {
 
-	use \Kdyby\StrictObjects\Scream;
+	use \Nette\SmartObject;
 
 	/**
 	 * @var \KdybyTests\Console\ArgCommand
@@ -35,6 +35,12 @@ class SameArgsCommandOne extends \Symfony\Component\Console\Command\Command
 		$this->setName('sameArgsCommand:one');
 	}
 
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 * @return void
+	 * @throws \Tester\AssertException
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		Assert::fail("This command shouldn't have been executed.");

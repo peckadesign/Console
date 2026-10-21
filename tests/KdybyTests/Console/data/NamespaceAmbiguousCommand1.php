@@ -11,13 +11,19 @@ use Tester\Assert;
 class NamespaceAmbiguousCommand1 extends \Symfony\Component\Console\Command\Command
 {
 
-	use \Kdyby\StrictObjects\Scream;
+	use \Nette\SmartObject;
 
 	protected function configure()
 	{
 		$this->setName('namespace1:ambiguous');
 	}
 
+	/**
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 * @return void
+	 * @throws \Tester\AssertException
+	 */
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		Assert::fail("This command shouldn't have been executed.");

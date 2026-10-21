@@ -42,6 +42,13 @@ class CliPresenter extends \Nette\Application\UI\Presenter
 	 */
 	private $application;
 
+	/**
+	 * Požadavek z konzole má metodu „cli“, kterou Presenter od nette/application 3.1 nepovolí (HTTP 405).
+	 */
+	protected function checkHttpMethod(): void
+	{
+	}
+
 	protected function startup(): void
 	{
 		parent::startup();
